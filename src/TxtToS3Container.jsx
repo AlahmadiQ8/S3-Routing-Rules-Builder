@@ -1,19 +1,35 @@
 import React, { Component } from 'react';
+import ConvertTxtToS3 from './lib';
 
 export default class TxtToS3Container extends Component {
 
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {output: ''};
     this.update = this.update.bind(this);
+    this.txtToS3 = new ConvertTxtToS3();
   }
 
   update(e){
     let input = e.target.value;
+    this.txtToS3 = new ConvertTxtToS3();
     let lines = input.split('\n');
-    let output = lines.join('<br/>');
-    console.log(output);
+    for (let line of lines) {
+      this.txtToS3.convertLine(line);
+    }
+    let output = this.txtToS3.toString();
+
+    // replace spaces with Unicode non-breaking space character
+    output = output.replace(/[^\S\n]/g, '\u00a0');
+    
+    output = output.split('\n').map((item, i) => 
+      <span key={i}>{item}<br/></span>
+    )
     this.setState({output: output});
+  }
+
+  componentDidMount() {
+    
   }
 
   render() {
@@ -23,7 +39,8 @@ export default class TxtToS3Container extends Component {
           <textarea onChange={this.update} className="form-control" id="exampleTextarea"></textarea>
         </div>
         <div className="col-sm-6">
-          <pre dangerouslySetInnerHTML={{__html: this.state.output}} />
+          
+          <pre>{this.state.output}</pre>
         </div>
       </div>
     );

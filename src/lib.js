@@ -34,6 +34,8 @@ export default class ConvertTxtToS3 {
     }
     let [prefix, target, ...status] = trimmed.match(/\S+/g) || [];
     if (!prefix || !target) {
+      // need to figure out a validation strategy. for not just return
+      return;
       throw new Error(`${ConversionErrors.LESS_THAN_2_WORDS}: "${trimmed}"`);
     }
     this.xw.startElement('RoutingRule');
