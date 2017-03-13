@@ -1,0 +1,55 @@
+
+/*.container, .container-fluid {
+  border: 1px dashed #333;
+}
+.row {
+  border: 1px dashed red;
+}
+.col {
+  border: 1px dashed blue;
+}
+*/
+
+header {
+  padding: 50px 100px 10px 100px;
+  background-color: #EC407A;
+}
+header h1, header h2 {
+  color:#fff;
+  font-weight: lighter;
+}
+header h2 {
+  font-size: 1.75rem;
+}
+
+
+.form-output {
+  min-height: 40vh;
+  /*border: 1px dashed blue;*/
+}
+
+
+textarea {
+  height: 100%;
+  white-space: nowrap;
+}
+.form-control:focus {
+  border-color: #EC407A;
+}
+.form-control {
+  background: url(http://i.imgur.com/2cOaJ.png);
+  background-attachment: local;
+  background-repeat: no-repeat;
+  padding-left: 35px;
+  padding-top: 10px;
+  border-color:#ccc;
+}
+
+
+pre {
+  padding: .5rem .75rem;
+  border: 1px solid #eee;
+  border-left: 2px solid #EC407A;
+  height: 100%;
+  white-space: nowrap;
+}

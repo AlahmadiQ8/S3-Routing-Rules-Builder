@@ -1,0 +1,21 @@
+{
+  "name": "text-to-s3",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^4.0.0-alpha.6",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "xml-writer": "github:alahmadiq8/node-xml-writer"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "react-scripts": "0.9.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
