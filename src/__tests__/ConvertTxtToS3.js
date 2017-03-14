@@ -1,14 +1,39 @@
-import ConvertTxtToS3, { ConversionErrors } from '../lib';
+import ConvertTxtToS3, { ConversionErrors, Parser } from '../lib';
 
-describe('convertLine', function() {
+
+
+describe('_parseLine', function() {
 
   beforeEach( () => {
     this.txtToS3 = new ConvertTxtToS3();
   });
 
+  it('throws correct error given three words and the third word cannot be parsed to int', () => {
+    this.txtToS3._parseLine.bind(this.txtToS3, 'one two three').should.throw(new RegExp(ConversionErrors.STATUS_NOT_NUMBER));
+  });
+
   it('throws error when line has less than two words', () => {
-    // this.txtToS3.convertLine('oneWord').should.throw(new RegExp(ConversionErrors.LESS_THAN_2_WORDS));
-    this.txtToS3.convertLine.bind(this.txtToS3, 'oneWord').should.throw(new RegExp(ConversionErrors.LESS_THAN_2_WORDS));
+    this.txtToS3._parseLine.bind(this.txtToS3, 'oneWord').should.throw(new RegExp(ConversionErrors.LESS_THAN_2_WORDS));
+  });
+
+  it('throws error given empty line', () => {
+    this.txtToS3._parseLine.bind(this.txtToS3, '').should.throw(new RegExp(ConversionErrors.EMPTY_LINE));
+  });
+
+  it('returns object with three properties of string type given three words', () => {
+    let {prefix, target, status} = this.txtToS3._parseLine('test test 212');
+    prefix.should.be.a('string');
+    target.should.be.a('string');
+    status.should.be.a('string');
+  })
+
+})
+
+
+describe('convertLine', function() {
+
+  beforeEach( () => {
+    this.txtToS3 = new ConvertTxtToS3();
   });
 
   it('converts "docs/ image/" to the correct RoutingRule entry', () => {
@@ -26,6 +51,37 @@ describe('convertLine', function() {
     this.txtToS3.toString().should.be.eq(exptected);
   });
 
+  it('converts "docs/ image" to the correct RoutingRule entry', () => {
+    this.txtToS3.convertLine('docs/ image');
+    let exptected = `<RoutingRules>
+    <RoutingRule>
+        <Condition>
+            <KeyPrefixEquals>docs/</KeyPrefixEquals>
+        </Condition>
+        <Redirect>
+            <ReplaceKeyWith>image</ReplaceKeyWith>
+        </Redirect>
+    </RoutingRule>
+</RoutingRules>`
+    this.txtToS3.toString().should.be.eq(exptected);
+  });
+
+  it('converts "docs/ image 301" to the correct RoutingRule entry', () => {
+    this.txtToS3.convertLine('docs/ image 301');
+    let exptected = `<RoutingRules>
+    <RoutingRule>
+        <Condition>
+            <KeyPrefixEquals>docs/</KeyPrefixEquals>
+        </Condition>
+        <Redirect>
+            <ReplaceKeyWith>image</ReplaceKeyWith>
+            <HttpRedirectCode>301</HttpRedirectCode>
+        </Redirect>
+    </RoutingRule>
+</RoutingRules>`
+    this.txtToS3.toString().should.be.eq(exptected);
+  });
+
 })
 
 
@@ -35,14 +91,10 @@ describe('toString', function() {
     this.txtToS3 = new ConvertTxtToS3();
   });
 
-  it('does not produce any xml for empty line', () => {
-    this.txtToS3.convertLine();
-    this.txtToS3.toString().should.be.empty;
-  });
-
-  it('produces correctly formated redirect rules given two lines', () => {
+  it('produces correctly formated redirect rules given three lines', () => {
     this.txtToS3.convertLine('docs/ image/');
-    this.txtToS3.convertLine('blog/ page/');
+    this.txtToS3.convertLine('blog/ page');
+    this.txtToS3.convertLine('docs/ image/ 200');
     let exptected = `<RoutingRules>
     <RoutingRule>
         <Condition>
@@ -57,7 +109,16 @@ describe('toString', function() {
             <KeyPrefixEquals>blog/</KeyPrefixEquals>
         </Condition>
         <Redirect>
-            <ReplaceKeyPrefixWith>page/</ReplaceKeyPrefixWith>
+            <ReplaceKeyWith>page</ReplaceKeyWith>
+        </Redirect>
+    </RoutingRule>
+    <RoutingRule>
+        <Condition>
+            <KeyPrefixEquals>docs/</KeyPrefixEquals>
+        </Condition>
+        <Redirect>
+            <ReplaceKeyPrefixWith>image/</ReplaceKeyPrefixWith>
+            <HttpRedirectCode>200</HttpRedirectCode>
         </Redirect>
     </RoutingRule>
 </RoutingRules>`

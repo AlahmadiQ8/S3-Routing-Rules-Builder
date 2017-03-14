@@ -7,7 +7,6 @@ export default class TxtToS3Container extends Component {
     super(props);
     this.state = {output: ''};
     this.update = this.update.bind(this);
-    this.txtToS3 = new ConvertTxtToS3();
   }
 
   update(e){
@@ -15,13 +14,17 @@ export default class TxtToS3Container extends Component {
     this.txtToS3 = new ConvertTxtToS3();
     let lines = input.split('\n');
     for (let line of lines) {
-      this.txtToS3.convertLine(line);
+      try {
+        this.txtToS3.convertLine(line);
+      } catch(e) {
+        console.log(e.message);  
+      }
     }
     let output = this.txtToS3.toString();
 
     // replace spaces with Unicode non-breaking space character
     output = output.replace(/[^\S\n]/g, '\u00a0');
-    
+
     output = output.split('\n').map((item, i) => 
       <span key={i}>{item}<br/></span>
     )
