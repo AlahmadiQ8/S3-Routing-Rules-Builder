@@ -1,4 +1,4 @@
-import ConvertTxtToS3, { ConversionErrors, Parser } from '../lib';
+import ConvertTxtToS3, { ConversionErrors } from '../lib';
 
 
 
@@ -82,6 +82,24 @@ describe('convertLine', function() {
     this.txtToS3.toString().should.be.eq(exptected);
   });
 
+  it('converts "docs/ https://github.com/AlahmadiQ8/ 301" to the correct RoutingRule entry', () => {
+    this.txtToS3.convertLine('docs/ https://github.com/AlahmadiQ8/ 301');
+    let exptected = `<RoutingRules>
+    <RoutingRule>
+        <Condition>
+            <KeyPrefixEquals>docs/</KeyPrefixEquals>
+        </Condition>
+        <Redirect>
+            <Protocol>https</Protocol>
+            <HostName>github.com</HostName>
+            <ReplaceKeyPrefixWith>AlahmadiQ8/</ReplaceKeyPrefixWith>
+            <HttpRedirectCode>301</HttpRedirectCode>
+        </Redirect>
+    </RoutingRule>
+</RoutingRules>`
+    this.txtToS3.toString().should.be.eq(exptected);
+  });
+
 })
 
 
@@ -95,6 +113,7 @@ describe('toString', function() {
     this.txtToS3.convertLine('docs/ image/');
     this.txtToS3.convertLine('blog/ page');
     this.txtToS3.convertLine('docs/ image/ 200');
+    this.txtToS3.convertLine('docs/ https://github.com/AlahmadiQ8/ 301');
     let exptected = `<RoutingRules>
     <RoutingRule>
         <Condition>
@@ -119,6 +138,17 @@ describe('toString', function() {
         <Redirect>
             <ReplaceKeyPrefixWith>image/</ReplaceKeyPrefixWith>
             <HttpRedirectCode>200</HttpRedirectCode>
+        </Redirect>
+    </RoutingRule>
+    <RoutingRule>
+        <Condition>
+            <KeyPrefixEquals>docs/</KeyPrefixEquals>
+        </Condition>
+        <Redirect>
+            <Protocol>https</Protocol>
+            <HostName>github.com</HostName>
+            <ReplaceKeyPrefixWith>AlahmadiQ8/</ReplaceKeyPrefixWith>
+            <HttpRedirectCode>301</HttpRedirectCode>
         </Redirect>
     </RoutingRule>
 </RoutingRules>`

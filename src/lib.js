@@ -18,8 +18,9 @@ export class UrlParser {
     let props = {
       protocol: parser.protocol.replace(/:/, ''),
       hostname: parser.hostname,
-      pathname: parser.pathname
+      pathname: parser.pathname.replace(/^\//,'')
     }
+
     assign(this, props);
   }
 
@@ -69,14 +70,19 @@ export default class ConvertTxtToS3 {
     this.xw.endElement();
     this.xw.startElement('Redirect');
 
+    let path = target;
     if (/^http/.test(target)) {
-      let temp = new UrlParser(target);
+      let urlParsed = new UrlParser(target);
+
+      this.xw.writeElement('Protocol', urlParsed.getProtocol());
+      this.xw.writeElement('HostName', urlParsed.getHostname());
+      path = urlParsed.getPathname();
     }
 
-    if (/.*\/$/.test(target)) { // if target ends with '/' char
-      this.xw.writeElement('ReplaceKeyPrefixWith', target);  
+    if (/.*\/$/.test(path)) { // if path ends with '/' char
+      this.xw.writeElement('ReplaceKeyPrefixWith', path);
     } else {
-      this.xw.writeElement('ReplaceKeyWith', target);  
+      this.xw.writeElement('ReplaceKeyWith', path);  
     }
     if (status) {
       this.xw.writeElement('HttpRedirectCode', status);    
