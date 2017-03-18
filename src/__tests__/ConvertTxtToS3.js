@@ -9,15 +9,15 @@ describe('_parseLine', function() {
   });
 
   it('throws correct error given three words and the third word cannot be parsed to int', () => {
-    this.txtToS3._parseLine.bind(this.txtToS3, 'one two three').should.throw(new RegExp(ConversionErrors.STATUS_NOT_NUMBER));
+    this.txtToS3._parseLine.bind(this.txtToS3, 'one two three').should.throw(new RegExp('Wrong format'));
   });
 
   it('throws error when line has less than two words', () => {
-    this.txtToS3._parseLine.bind(this.txtToS3, 'oneWord').should.throw(new RegExp(ConversionErrors.LESS_THAN_2_WORDS));
+    this.txtToS3._parseLine.bind(this.txtToS3, 'oneWord').should.throw(new RegExp('Wrong format'));
   });
 
   it('throws error given empty line', () => {
-    this.txtToS3._parseLine.bind(this.txtToS3, '').should.throw(new RegExp(ConversionErrors.EMPTY_LINE));
+    this.txtToS3._parseLine.bind(this.txtToS3, '').should.throw(new RegExp('Wrong format'));
   });
 
   it('returns object with three properties of string type given three words', () => {

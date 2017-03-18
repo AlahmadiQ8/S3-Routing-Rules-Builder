@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 import TxtToS3Container from './TxtToS3Container';
+// import MyEditor from './DraftEditor';
+// import EntityEditorExample from './EntityEditorExample';
+import TweetEditorExample from './Tweet';
 
 const Header = () =>
   <header>
@@ -17,8 +20,9 @@ class App extends Component {
         <Header/>
 
         <section className="container mt-5">
-
+          
           <TxtToS3Container/>
+          
 
         </section>
       </div>

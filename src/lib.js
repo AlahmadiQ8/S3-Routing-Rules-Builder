@@ -5,7 +5,7 @@ import XMLWriter from 'xml-writer';
 export const ConversionErrors = {
   EMPTY_LINE: 'line must not be empty',
   LESS_THAN_2_WORDS: 'line contains less than two words',
-  WRONG_FORMAT: 'Cannot convert line',
+  WRONG_FORMAT: 'Wrong format',
   STATUS_NOT_NUMBER: 'status must be an integer'
 };
 
@@ -36,6 +36,7 @@ export class UrlParser {
 
 }
 
+export const VALID_LINE = /^\S+\s+\S+\s*(\d{3})*/g;
 
 export default class ConvertTxtToS3 {
   
@@ -47,18 +48,17 @@ export default class ConvertTxtToS3 {
   }
 
   _parseLine(line) {
-    let trimmed = line.trim();
-    if (!trimmed.length) {
-      throw new Error(`${ConversionErrors.EMPTY_LINE}: "${trimmed}"`);
+    if (line.match(VALID_LINE) == null) {
+      throw new Error(`${ConversionErrors.WRONG_FORMAT}: "${line}"`)
     }
-    let [prefix, target, ...status] = trimmed.match(/\S+/g) || [];
-    if (status.length && isNaN(parseInt(status[0], 10))) {
-      throw new Error(`${ConversionErrors.STATUS_NOT_NUMBER}: "${status[0]}"`);
+    let [prefix, target, ...status] = line.match(/\S+/g) || [];
+    let parsedStatus = parseInt(status, 10);
+    const invalidStatusExists = status && status.length && isNaN(parsedStatus);
+    const isStatus3Digits = parsedStatus.toString().length == 3;
+    if (invalidStatusExists || (!invalidStatusExists && !isStatus3Digits)) {
+      throw new Error(`${ConversionErrors.STATUS_NOT_NUMBER}: "${line}"`)
     }
-    if (!(prefix && target)) {
-      throw new Error(`${ConversionErrors.LESS_THAN_2_WORDS}: "${trimmed}"`);
-    }
-    status = String(status);
+    status = String(parsedStatus);
     return {prefix, target, status};
   }
 

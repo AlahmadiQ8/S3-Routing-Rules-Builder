@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ConvertTxtToS3 from './lib';
+import CustomDraftEditor from './Tweet';
+import TweetEditorExample from './temp';
 
 export default class TxtToS3Container extends Component {
 
@@ -9,10 +11,9 @@ export default class TxtToS3Container extends Component {
     this.update = this.update.bind(this);
   }
 
-  update(e){
-    let input = e.target.value;
+  update(text){
     this.txtToS3 = new ConvertTxtToS3();
-    let lines = input.split('\n');
+    let lines = text.split('\u000A').map((line) => line.trim());
     for (let line of lines) {
       try {
         this.txtToS3.convertLine(line);
@@ -39,10 +40,11 @@ export default class TxtToS3Container extends Component {
     return (
       <div className="row form-output">
         <div className="col-sm-6">
-          <textarea onChange={this.update} className="form-control" id="exampleTextarea"></textarea>
+          <div className="form-control">  
+            <CustomDraftEditor update={this.update}/>
+          </div>
         </div>
         <div className="col-sm-6">
-          
           <pre>{this.state.output}</pre>
         </div>
       </div>
