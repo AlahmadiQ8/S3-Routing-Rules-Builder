@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ConvertTxtToS3 from './lib';
-import CustomDraftEditor from './Tweet';
-import TweetEditorExample from './temp';
+import CustomDraftEditor from './CustomDraftEditor';
 
 export default class TxtToS3Container extends Component {
 

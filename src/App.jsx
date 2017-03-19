@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 
 import TxtToS3Container from './TxtToS3Container';
-// import MyEditor from './DraftEditor';
-// import EntityEditorExample from './EntityEditorExample';
-import TweetEditorExample from './Tweet';
 
 const Header = () =>
   <header>

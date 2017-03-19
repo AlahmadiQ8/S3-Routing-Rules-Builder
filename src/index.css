@@ -1,15 +1,4 @@
 
-/*.container, .container-fluid {
-  border: 1px dashed #333;
-}
-.row {
-  border: 1px dashed red;
-}
-.col {
-  border: 1px dashed blue;
-}
-*/
-
 header {
   padding: 50px 100px 10px 100px;
   background-color: #EC407A;
@@ -22,21 +11,37 @@ header h2 {
   font-size: 1.75rem;
 }
 
+
+
 .form-output {
   align-items: stretch;
   min-height: 300px;
   max-height: 400px;
 }
 
+
+
 .form-control {
-  padding: 0 .75rem; 
+  padding: 0; 
   height: 100%;
 }
 .editor {
   padding: .5rem .75rem 0 .75rem; 
   font-family: monospace;
   color: #9E9E9E;
+
 }
+.public-DraftStyleDefault-block {
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+.DraftEditor-root {
+  overflow-y: scroll;
+  height: calc(400px - 1rem);
+
+}
+
+
 
 pre {
   padding: .5rem .75rem;
@@ -46,11 +51,7 @@ pre {
   height: 100%;
 }
 
-.public-DraftStyleDefault-block {
-  white-space: nowrap;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
+
 
 .invalid-input {
   color: #FF1744;
