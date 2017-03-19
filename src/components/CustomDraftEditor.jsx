@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Draft from 'draft-js';
-const {CompositeDecorator, Editor, EditorState, Modifier, SelectionState, ContentState, EditorChangeType} = Draft;
-import { VALID_LINE } from './lib';
+const {CompositeDecorator, Editor, EditorState} = Draft;
+import { VALID_LINE } from '../lib';
+
 import 'draft-js/dist/Draft.css';
 
 export default class CustomDraftEditor extends React.Component {

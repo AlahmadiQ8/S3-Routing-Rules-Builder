@@ -1,5 +1,7 @@
+import React from 'react';
 import assign from 'lodash.assign';
 import XMLWriter from 'xml-writer';
+
 
 
 export const ConversionErrors = {
@@ -53,11 +55,6 @@ export default class ConvertTxtToS3 {
     }
     let [prefix, target, ...status] = line.match(/\S+/g) || [];
     let parsedStatus = parseInt(status, 10);
-    const invalidStatusExists = status && status.length && isNaN(parsedStatus);
-    const isStatus3Digits = parsedStatus.toString().length == 3;
-    if (invalidStatusExists || (!invalidStatusExists && !isStatus3Digits)) {
-      throw new Error(`${ConversionErrors.STATUS_NOT_NUMBER}: "${line}"`)
-    }
     status = String(parsedStatus);
     return {prefix, target, status};
   }
@@ -78,13 +75,14 @@ export default class ConvertTxtToS3 {
       this.xw.writeElement('HostName', urlParsed.getHostname());
       path = urlParsed.getPathname();
     }
-
-    if (/.*\/$/.test(path)) { // if path ends with '/' char
-      this.xw.writeElement('ReplaceKeyPrefixWith', path);
-    } else {
-      this.xw.writeElement('ReplaceKeyWith', path);  
+    if (path) {
+      if (/.*\/$/.test(path)) { // if path ends with '/' char
+        this.xw.writeElement('ReplaceKeyPrefixWith', path);
+      } else {
+        this.xw.writeElement('ReplaceKeyWith', path);  
+      }
     }
-    if (status) {
+    if (!isNaN(status) && status.length === 3) {
       this.xw.writeElement('HttpRedirectCode', status);    
     }
 

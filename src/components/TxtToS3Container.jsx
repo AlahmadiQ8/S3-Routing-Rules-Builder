@@ -1,6 +1,10 @@
+import Clipboard from 'clipboard';
+
 import React, { Component } from 'react';
-import ConvertTxtToS3 from './lib';
+import ConvertTxtToS3 from '../lib';
 import CustomDraftEditor from './CustomDraftEditor';
+import Prism from 'prismjs';
+
 
 export default class TxtToS3Container extends Component {
 
@@ -25,14 +29,19 @@ export default class TxtToS3Container extends Component {
     // replace spaces with Unicode non-breaking space character
     output = output.replace(/[^\S\n]/g, '\u00a0');
 
-    output = output.split('\n').map((item, i) => 
-      <span key={i}>{item}<br/></span>
-    )
+    // output = output.split('\n').map((item, i) => 
+    //   <span key={i}>{item}<br/></span>
+    // )
+    output = Prism.highlight(output, Prism.languages.xml);
     this.setState({output: output});
   }
 
   componentDidMount() {
-    
+    let clipboard = new Clipboard('#copy');
+    clipboard.on('error', function(e) {
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+    });
   }
 
   render() {
@@ -44,7 +53,9 @@ export default class TxtToS3Container extends Component {
           </div>
         </div>
         <div className="col-sm-6">
-          <pre>{this.state.output}</pre>
+          <pre id='output'><code className='language-xml'>
+          <span dangerouslySetInnerHTML={{__html: this.state.output}} />
+          </code></pre>
         </div>
       </div>
     );
