@@ -29,9 +29,6 @@ export default class TxtToS3Container extends Component {
     // replace spaces with Unicode non-breaking space character
     output = output.replace(/[^\S\n]/g, '\u00a0');
 
-    // output = output.split('\n').map((item, i) => 
-    //   <span key={i}>{item}<br/></span>
-    // )
     output = Prism.highlight(output, Prism.languages.xml);
     this.setState({output: output});
   }

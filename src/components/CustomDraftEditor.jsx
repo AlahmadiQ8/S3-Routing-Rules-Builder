@@ -65,11 +65,3 @@ const HandleSpan = (props) => {
     </span>
   );
 };
-
-
-
-const styles = {
-  handle: {
-    color: '#FF1744',
-  },
-};

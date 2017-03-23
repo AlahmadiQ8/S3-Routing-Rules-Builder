@@ -8,10 +8,6 @@ describe('_parseLine', function() {
     this.txtToS3 = new ConvertTxtToS3();
   });
 
-  it('throws correct error given three words and the third word cannot be parsed to int', () => {
-    this.txtToS3._parseLine.bind(this.txtToS3, 'one two three').should.throw(new RegExp('Wrong format'));
-  });
-
   it('throws error when line has less than two words', () => {
     this.txtToS3._parseLine.bind(this.txtToS3, 'oneWord').should.throw(new RegExp('Wrong format'));
   });

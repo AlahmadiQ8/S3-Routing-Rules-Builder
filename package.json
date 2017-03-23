@@ -2,6 +2,7 @@
   "name": "text-to-s3",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://alahmadiq8.github.io/S3-Routing-Rules-Builder",
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.6",
     "clipboard": "^1.6.1",
@@ -14,12 +15,15 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "gh-pages": "^0.12.0",
     "react-scripts": "0.9.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   }
 }
