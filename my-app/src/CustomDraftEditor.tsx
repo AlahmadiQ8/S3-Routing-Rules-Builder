@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Editor } from 'slate-react';
 import { Value } from 'slate';
+import { WordsIterator, wordLength } from './wordsIterator';
 
 const { useState } = React;
 
@@ -15,7 +16,7 @@ const initialValue = Value.fromJSON({
             object: 'text',
             leaves: [
               {
-                text: 'A line of text in a paragraph.'
+                text: ''
               }
             ]
           }
@@ -28,45 +29,7 @@ const initialValue = Value.fromJSON({
 export function CustomEditor() {
   const [value, setValue] = useStateLegacy(initialValue);
 
-  const onKeyDown = (event, editor, next) => {
-    const { value } = editor;
-    const texts = value.document.getTexts();
-    const decorations: any[] = [];
-    texts.forEach(node => {
-      const { key, text } = node;
-      const splitted = text.split(/\s+/);
-      splitted.forEach(word => {
-        decorations.push({
-          anchor: { key, offset: 0 },
-          focus: { key, offset: word.length },
-          mark: { type: 'custom' }
-        });
-      });
-      console.log(splitted);
-    });
-    editor.withoutSaving(() => {
-      editor.setDecorations(decorations)
-    })
-    return next();
-  };
-
-  const renderMark = (props, editor, next) => {
-    const { children, mark, attributes } = props;
-
-    switch (mark.type) {
-      case 'custom':
-        console.log('yaass')
-        return (
-          <span {...attributes} style={{ backgroundColor: '#ffeeba' }}>
-            {children}
-          </span>
-        );
-      default:
-        return next();
-    }
-  };
-
-  return <Editor value={value} onChange={setValue} onKeyDown={onKeyDown} renderMark={renderMark} />;
+  return <Editor value={value} onChange={setValue} plugins={[plugin]} />;
 }
 
 function useStateLegacy(initialValue) {
@@ -76,3 +39,44 @@ function useStateLegacy(initialValue) {
   };
   return [value, setValueLegacy];
 }
+
+function renderMark(props, editor, next) {
+  const { children, mark, attributes } = props;
+  switch (mark.type) {
+    case 'custom':
+      return (
+        <span {...attributes} style={{ color: 'blue' }}>
+          {children}
+        </span>
+      );
+    default:
+      return next();
+  }
+}
+
+function handler(event, editor, next) {
+  const { value } = editor;
+  const texts = value.document.getTexts();
+  const decorations: any[] = [];
+  texts.forEach(node => {
+    const { key, text } = node;
+    const wordsIter = new WordsIterator(text);
+    for (const offset of wordsIter) {
+      decorations.push({
+        anchor: { key, offset },
+        focus: { key, offset: offset + wordLength(text, offset) },
+        mark: { type: 'custom' }
+      });
+    }
+  });
+  editor.withoutSaving(() => {
+    editor.setDecorations(decorations);
+  });
+  return next();
+}
+
+const plugin = {
+  renderMark,
+  onKeyDown: handler,
+  onCopyPaste: handler
+};
