@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-import './styles/index.css';
+import './styles/index.scss';
 import './styles/prism-custom.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
